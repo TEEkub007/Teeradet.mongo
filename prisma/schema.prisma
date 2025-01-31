@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model Camera {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  ip_address String
+  name       String
+  location   String
+  events     Event[] // ✅ เปลี่ยน event → events (พหูพจน์)
+}
+
+model Event {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  amount    Int
+  create_at DateTime @default(now()) // ✅ ลบ @db.Timestamp ออก
+  camera    Camera   @relation(fields: [camera_id], references: [id])
+  camera_id String   @db.ObjectId
+}
+
